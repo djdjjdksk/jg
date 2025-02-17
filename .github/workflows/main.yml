@@ -1,0 +1,30 @@
+name: Upload Existing ZIP to GitHub Releases
+
+on:
+  workflow_dispatch: # تشغيل يدوي من GitHub Actions
+
+jobs:
+  upload-existing-zip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Find existing ZIP file
+        run: |
+          if [ ! -f FrivReborn.zip ]; then
+            echo "❌ ملف FrivReborn.zip غير موجود في المستودع!"
+            exit 1
+          fi
+
+      - name: Upload ZIP to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          files: FrivReborn.zip
+          tag_name: v1.0 # يمكنك تغيير رقم الإصدار عند الحاجة
+          release_name: "FrivReborn Release v1.0"
+          body: "النسخة المضغوطة من FrivReborn التي تم إنشاؤها مسبقًا"
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
