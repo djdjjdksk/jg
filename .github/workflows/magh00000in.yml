@@ -1,0 +1,30 @@
+name: Download, Zip and Upload to Mega
+
+on:
+  workflow_dispatch: # تشغيل يدوي من GitHub Actions
+
+jobs:
+  download-zip-upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download FrivReborn files
+        run: |
+          git clone --depth=1 https://github.com/Tsyuay/FrivReborn.git downloaded_files
+          rm -rf downloaded_files/.git # إزالة بيانات Git لتقليل الحجم
+
+      - name: Zip the files
+        run: |
+          zip -r FrivReborn.zip downloaded_files
+          ls -lh FrivReborn.zip # عرض حجم الملف المضغوط
+
+      - name: Install MegaCMD
+        run: |
+          sudo apt-get update
+          sudo apt-get install megatools -y
+
+      - name: Upload ZIP to Mega.nz
+        run: |
+          megatools put --username "samasama1234002@gmail.com" --password "sama1234@" FrivReborn.zip --path /Root/MyUploads/
