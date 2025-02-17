@@ -1,0 +1,33 @@
+name: Download and Zip FrivReborn
+
+on:
+  workflow_dispatch: # تشغيل يدوي من GitHub Actions
+
+jobs:
+  download-zip-upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download FrivReborn files
+        run: |
+          git clone --depth=1 https://github.com/Tsyuay/FrivReborn.git downloaded_files
+          rm -rf downloaded_files/.git # إزالة بيانات Git لتقليل الحجم
+
+      - name: Zip the files
+        run: |
+          zip -r FrivReborn.zip downloaded_files
+          ls -lh FrivReborn.zip # عرض حجم الملف المضغوط
+
+      - name: Upload ZIP to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          files: FrivReborn.zip
+          tag_name: v1.0  # يمكنك تغيير رقم الإصدار حسب الحاجة
+          release_name: "FrivReborn Release v1.0"
+          body: "نسخة محدثة من FrivReborn مع الملفات المضغوطة"
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
